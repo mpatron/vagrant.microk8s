@@ -96,10 +96,14 @@
     shell: source /etc/profile.d/apps-bin-path.sh && microk8s.status --wait-ready
     args:
       executable: /bin/bash
+    register: screen_out
+  - debug: var=screen_out.stdout_lines
   - name: Microk8s inspect
     shell: source /etc/profile.d/apps-bin-path.sh && microk8s.inspect
     args:
       executable: /bin/bash
+    register: screen_out
+  - debug: var=screen_out.stdout_lines
   - name: Alias kubectl
     shell: "source /etc/profile.d/apps-bin-path.sh && snap alias microk8s.kubectl kubectl"
     args:
