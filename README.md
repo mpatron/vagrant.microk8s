@@ -32,6 +32,12 @@ fg %1
 kubectl delete deployment nginx-test
 ~~~
 
+Erreur dans le provisioning, le relancer :
+
+~~~bash
+cd /vagrant && PYTHONUNBUFFERED=1 ANSIBLE_NOCOLOR=true ANSIBLE_CONFIG='/vagrant/ansible.cfg' ansible-playbook --limit="all" --inventory-file=inventory.txt --extra-vars=\{\"PROXY_ON\":false,\"PROXY_SERVER\":\"\"\} -v provision.yml
+~~~
+
 ## Vrac 
 
 ~~~text
