@@ -9,6 +9,13 @@ Liens
 * [==> Mise à jour de vagrant](docs/mise_a_jour_vagrant.md)
 * [==> Fabrication d'une VM vagrant](docs/fabrication_vm_vagrant.md)
 
+Quick start
+
+~~~powershell
+vagrant up  --provider=virtualbox --provision
+vagrant ssh
+~~~
+
 Exemple d'install de kubernetes :
 https://github.com/kairen/kube-ansible
 
@@ -63,4 +70,16 @@ pip3 install --user powerline-status
 pip3 install --user powerline-gitstatus
 
 $Env:VAGRANT_DEFAULT_PROVIDER = "virtualbox"
+
+https://github.com/bitnami/charts/tree/master/bitnami/postgresql/#installing-the-chart
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm show values bitnami/postgresql > myvalues.yml
+kubectl create namespace myns
+helm install --namespace myns --set postgresqlPassword=secretpassword,postgresqlDatabase=mydatabase postgres bitnami/postgresql
+
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default postgres-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+kubectl run postgres-postgresql-client --rm --tty -i --restart='Never' --namespace default --image docker.io/bitnami/postgresql:11.8.0-debian-10-r19 --env="PGPASSWORD=$POSTGRES_PASSWORD" --command -- psql --host postgres-postgresql -U postgres -d mydatabase -p 5432 -c '\l'
+
 ~~~

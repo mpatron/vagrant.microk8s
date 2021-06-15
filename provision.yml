@@ -83,7 +83,7 @@
     snap:
       name: microk8s
       classic: yes
-      channel: "stable"
+      channel: "latest/stable"
   - name: Stop Microk8s
     shell: source /etc/profile.d/apps-bin-path.sh && microk8s.stop
     args:
