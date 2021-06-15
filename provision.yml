@@ -1,0 +1,135 @@
+# ansible-playbook ./setup.yml  -v -vvvv -u ubuntu -i ./host.yml 
+# cd /vagrant && ansible-playbook /vagrant/provision.yml  -vvv -i /vagrant/inventory.txt  -l nodes
+# ansible 2.7 !!
+---
+###############################################################################
+##                               1 All Machine                               ##
+###############################################################################
+- name: Installateur
+  hosts: [node0]
+  become: yes
+  user: vagrant
+
+  vars :
+    PROXY_ON: "{{ PROXY_ON }}"
+    PROXY_SERVER: "{{ PROXY_SERVER }}"
+
+  environment:
+    SERVER_NTP: 0.fr.pool.ntp.org
+
+  tasks:
+  - name: Doit être Ubuntu  20.04 LTS
+    fail: msg="===>> Only on Ubuntu  20.04 LTS, derivatives, and later ! <<==="
+    when: (ansible_distribution != 'Ubuntu')
+  - name: Update and upgrade apt packages
+    become: true
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400 #One day
+  - name: Installation des packages
+    apt: 
+      name:
+        - rng-tools
+        - ntpdate
+        - vim
+        - lsof
+        - nmap
+#        - bind-utils
+        - dos2unix
+        - sshpass
+      state: present
+  - name: Mise en forme unix des script
+    lineinfile:
+      path: /usr/lib/systemd/system/rng-tools.service
+      regexp: '^(.*)ExecStart=(.*)$'
+      line: 'ExecStart=/usr/sbin/rngd -f -r /dev/urandom'
+      backrefs: yes
+  - name: Démarrage du service rngd sur la vm pour rendre actif le générateur aléatoire.
+    systemd:
+      state: started
+      daemon_reload: yes
+      enabled: yes
+      name: rng-tools
+
+  - name: Install base dependencies
+    apt: 
+      name: 
+        - snapd
+      state: present 
+    become: yes
+
+  - name: Check is ufw installed
+    shell: command -v ufw >/dev/null 2>&1
+    register: is_ufw_exist
+    ignore_errors: yes
+
+  - name: Disabling ufw
+    command: ufw disable
+    become: yes
+    when: is_ufw_exist.rc == 0
+
+  - name: Set ip forwarding
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: 1
+      sysctl_set: yes
+
+  - name: Disable Swap
+    command: swapoff -a
+
+  - name: Install microk8s
+    become: yes
+    snap:
+      name: microk8s
+      classic: yes
+      channel: "stable"
+  - name: Stop Microk8s
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.stop
+    args:
+      executable: /bin/bash
+  - name: Start Microk8s
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.start
+    args:
+      executable: /bin/bash
+  - name: Microk8s status
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.status --wait-ready
+    args:
+      executable: /bin/bash
+  - name: Microk8s inspect
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.inspect
+    args:
+      executable: /bin/bash
+  - name: Alias kubectl
+    shell: "source /etc/profile.d/apps-bin-path.sh && snap alias microk8s.kubectl kubectl"
+    args:
+      executable: /bin/bash
+  - name: Alias helm3
+    shell: "source /etc/profile.d/apps-bin-path.sh && snap alias microk8s.helm3 helm3"
+    args:
+      executable: /bin/bash
+  - name: Enable dns
+    shell: "source /etc/profile.d/apps-bin-path.sh && microk8s.enable dns"
+    args:
+      executable: /bin/bash
+  - name: Enable ingress
+    shell: "source /etc/profile.d/apps-bin-path.sh && microk8s.enable ingress"
+    args:
+      executable: /bin/bash
+  - name: Enable storage
+    shell: "source /etc/profile.d/apps-bin-path.sh && microk8s.enable storage"
+    args:
+      executable: /bin/bash
+  - name: Enable K8s Dashboard
+    shell: "source /etc/profile.d/apps-bin-path.sh && /snap/bin/microk8s.enable dashboard"
+    when: k8s_dashboard|default(False)|bool == True
+    args:
+      executable: /bin/bash
+  - name: Enable sudoer on vagrant user
+    shell: "usermod -a -G microk8s vagrant"
+    args:
+      executable: /bin/bash
+  - name: Enable sudoer on vagrant user
+    shell: "chown -f -R vagrant ~/.kube"
+    args:
+      executable: /bin/bash
