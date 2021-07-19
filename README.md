@@ -30,13 +30,15 @@ Puis entamer la phase de test:
 
 ~~~bash
 kubectl run nginx-test --image nginxdemos/hello --port 80 --expose
-kubectl get all
+watch kubectl get all --all-namespaces
 kubectl logs -f $(kubectl get pods | awk 'NR==2 {print $1}')
 kubectl proxy --port=8080 &
-curl http://localhost:8080/api/v1/namespaces/jobjects/services/http:nginx-test:/proxy/
+curl http://localhost:8080/api/v1/namespaces/default/services/http:nginx-test:/proxy/
 fg %1
 <Ctrl-C>
 kubectl delete deployment nginx-test
+kubectl delete service nginx-test
+kubectl delete pods nginx-test
 ~~~
 
 Erreur dans le provisioning, le relancer :
@@ -45,7 +47,7 @@ Erreur dans le provisioning, le relancer :
 cd /vagrant && PYTHONUNBUFFERED=1 ANSIBLE_NOCOLOR=true ANSIBLE_CONFIG='/vagrant/ansible.cfg' ansible-playbook --limit="all" --inventory-file=inventory.txt --extra-vars=\{\"PROXY_ON\":false,\"PROXY_SERVER\":\"\"\} -v provision.yml
 ~~~
 
-## Vrac 
+## Vrac
 
 ~~~text
 Video expliquant comment utiliser le let'encrypt
