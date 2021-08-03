@@ -6,8 +6,9 @@
 
 Liens
 
-* [==> Mise à jour de vagrant](docs/mise_a_jour_vagrant.md)
-* [==> Fabrication d'une VM vagrant](docs/fabrication_vm_vagrant.md)
+* [=> Mise à jour de vagrant](docs/mise_a_jour_vagrant.md)
+* [=> Fabrication d'une VM vagrant](docs/fabrication_vm_vagrant.md)
+* [=> Installation de metallb](docs/metallb.md)
 
 Quick start
 
@@ -17,7 +18,7 @@ vagrant ssh
 ~~~
 
 Exemple d'install de kubernetes :
-https://github.com/kairen/kube-ansible
+<https://github.com/kairen/kube-ansible>
 
 Configuration de Git
 
