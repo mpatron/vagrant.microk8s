@@ -18,7 +18,7 @@ helm repo add metallb https://metallb.github.io/metallb
 helm install metallb metallb/metallb -f metallb_values.yml
 ~~~
 
-~~~powershell
+~~~bash
 vagrant@master:~$ cat metallb_values.yml
 configInline:
   address-pools:
@@ -26,9 +26,15 @@ configInline:
      protocol: layer2
      addresses:
      - 192.168.56.210-192.168.56.230
+~~~
+
+~~~bash
 vagrant@master:~$ helm repo add metallb https://metallb.github.io/metallb
 WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /var/snap/microk8s/2346/credentials/client.config
 "metallb" has been added to your repositories
+~~~
+
+~~~bash
 vagrant@master:~$ helm install metallb metallb/metallb -f metallb_values.yml
 WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /var/snap/microk8s/2346/credentials/client.config
 W0803 08:08:41.966149   99039 warnings.go:70] policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
