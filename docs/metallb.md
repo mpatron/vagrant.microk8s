@@ -1,6 +1,6 @@
 # Metallb avec microk8s
 
-Kubernetes n'expose pas ses reseaux interne. Afin de ne pas utiliser proxyport qui n'est pas d'usage souple. Metallb, lui, permet d'exposer les IP des services de façon simple quand le kubernetes est installé sur des VM ou en barre metal.
+Kubernetes n'expose pas ses reseaux internes. Afin de ne pas utiliser proxyport qui n'est pas d'usage souple. Metallb, lui, permet d'exposer les IP des services de façon simple quand le kubernetes est installé sur des VM ou en barre metal.
 Liste des fichiers en version version 0.10.2 au 2 aout 2021.
 
 ## Installation à la main
