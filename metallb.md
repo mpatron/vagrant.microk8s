@@ -4,12 +4,19 @@ Liste des fichiers en version version 0.10.2 au 2 aout 2021.
 
 ## Installation à la main
 
-https://github.com/metallb/metallb/blob/v0.10.2/manifests/metallb.yaml
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+Source :
+<https://github.com/metallb/metallb/blob/v0.10.2/manifests/metallb.yaml>
 
-helm install metallb metallb/metallb -f metallb_values.yml
+~~~bash
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+~~~
 
 ## Installation avec helm
+
+~~~bash
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb -f metallb_values.yml
+~~~
 
 ~~~powershell
 vagrant@master:~$ cat metallb_values.yml
@@ -19,9 +26,6 @@ configInline:
      protocol: layer2
      addresses:
      - 192.168.56.210-192.168.56.230
-~~~
-
-~~~powershell
 vagrant@master:~$ helm repo add metallb https://metallb.github.io/metallb
 WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /var/snap/microk8s/2346/credentials/client.config
 "metallb" has been added to your repositories
@@ -52,8 +56,7 @@ config:
 To see IP assignments, try `kubectl get services`.
 ~~~
 
-
-Test avec nginx
+## Test avec nginx
 
 ~~~bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/tutorial-2.yaml
