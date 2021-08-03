@@ -63,7 +63,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manif
 ~~~
 
 ~~~powershell
-C:\Users\mpatron\Documents\github\vagrant\vagrant.lxd>curl http://192.168.56.210
+vagrant@master:~$ curl http://192.168.56.210
 <!DOCTYPE html>
 <html>
 <head>
