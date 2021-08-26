@@ -97,3 +97,4 @@ Commercial support is available at
 </body>
 </html>
 ~~~
+helm install --create-namespace -n portainer portainer portainer/portainer --set service.type=LoadBalancer
