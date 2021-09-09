@@ -1,6 +1,6 @@
 # Metallb avec microk8s
 
-Kubernetes n'expose pas ses reseaux internes. Afin de ne pas utiliser proxyport qui n'est pas d'usage souple. Metallb, lui, permet d'exposer les IP des services de façon simple quand le kubernetes est installé sur des VM ou en barre metal.
+Kubernetes n'expose pas ses reseaux internes. Par defaut, rien n'est accésssible depuis l'exterrieur du kubernetes. Il existe un méthode d'accès avec proxyport mais dans la pratique, on l'active, on la déactive, etc. Pendant la phase de developpement d'un dockerfile ou une application, ça peut devenir saoulant. Alors il y a notre sauveur : Metallb., Il permet d'exposer les IP des services de façon simple quand le kubernetes est installé sur des VM ou en barre metal. En fait, Metallb est le ClusterIP du baree metal ! Et c'est très facile d'usage.
 Liste des fichiers en version version 0.10.2 au 2 aout 2021.
 
 ## Installation à la main
@@ -12,7 +12,7 @@ Source :
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
 ~~~
 
-# Installation sur microk8s
+## Installation sur microk8s
 
 Vérifier que le host portant microk8s a bien un carte sur la même plage 192.168.56.0/24, par exemple 192.168.56.150.
 
@@ -147,4 +147,11 @@ Commercial support is available at
 </body>
 </html>
 ~~~
+
+## Aller plus loin
+
+Il est peut être utile d'installer un outils permettant d'administrer kubernetes de façon visuel comme portainer. Voici la commande d'installation avec helm :
+
+~~~bash
 helm install --create-namespace -n portainer portainer portainer/portainer --set service.type=LoadBalancer
+~~~
