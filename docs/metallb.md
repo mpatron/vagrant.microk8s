@@ -153,5 +153,7 @@ Commercial support is available at
 Il est peut être utile d'installer un outils permettant d'administrer kubernetes de façon visuel comme portainer. Voici la commande d'installation avec helm :
 
 ~~~bash
+helm repo add portainer https://portainer.github.io/k8s/
+helm repo update
 helm install --create-namespace -n portainer portainer portainer/portainer --set service.type=LoadBalancer
 ~~~
