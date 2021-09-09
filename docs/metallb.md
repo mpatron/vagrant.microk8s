@@ -12,6 +12,14 @@ Source :
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
 ~~~
 
+# Installation sur microk8s
+
+Vérifier que le host portant microk8s a bien un carte sur la même plage 192.168.56.0/24, par exemple 192.168.56.150.
+
+~~~bash
+microk8s enable metallb:192.168.56.190-192.168.56.210
+~~~
+
 ## Installation avec helm
 
 ~~~bash
@@ -66,11 +74,53 @@ To see IP assignments, try `kubectl get services`.
 ## Test avec nginx
 
 ~~~bash
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/tutorial-2.yaml
+vagrant@master:~$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/tutorial-2.yaml
+vagrant@master:~$ kubectl get services
+NAME         TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)        AGE
+kubernetes   ClusterIP      10.152.183.1     <none>           443/TCP        3h17m
+nginx        LoadBalancer   10.152.183.172   192.168.56.190   80:32219/TCP   43s
+~~~
+
+Contenu du fichier tutorial-2.yaml
+
+~~~yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1
+        ports:
+        - name: http
+          containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx
+  type: LoadBalancer
 ~~~
 
 ~~~powershell
-vagrant@master:~$ curl http://192.168.56.210
+vagrant@master:~$ curl http://192.168.56.190
 <!DOCTYPE html>
 <html>
 <head>
