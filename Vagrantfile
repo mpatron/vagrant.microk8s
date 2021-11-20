@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
   config.vm.boot_timeout = 180
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = "4096" #3072
+    vb.memory = 8192 # "4096" #3072
     vb.cpus = 4
     vb.customize ['modifyvm', :id, '--cableconnected1', 'on']
   end
